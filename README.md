@@ -1,14 +1,23 @@
+Proje 2 uygulamadan oluşur. İlki frontend uygulaması ikincisi ise verilen API'ye istek atabilmek amacıyla oluşturulmuş proxy backend uygulamasıdır. Frontend uygulaması üzerinden API'ye istek atarken cors hatası alındığı için proxy backend uygulaması geliştirilmiştir. 
 
-Gerekli bağımlılıkları yükleyin:
+Proxy backend uygulamasının çalıştırılması :
+
+/cd backend 
+
 npm install
 
-Uygulamayı başlatın:
+node server.js
+
+React frontend uygulamasının çalıştırılması :
+/cd dashboard
+
+npm install
+
 npm run dev
 
+Projenin Yaptığı İş
 Bu proje, verileri bir API'den alarak bir tabloda görüntüleyen bir React dashboard uygulamasıdır. Kullanıcılar,
-verileri severity seviyelerine göre filtreleyebilir ve arama yapabilir.
-
-Özellikler:
+verileri severity seviyelerine göre filtreleyebilir ve arama yapabilir. 
 
 Veri Çekme: axios ile API'den veri çekilir.
 
