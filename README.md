@@ -1,13 +1,4 @@
 # Anchor Security
-Proje 2 uygulamadan oluşur. İlki frontend uygulaması ikincisi ise verilen API'ye istek atabilmek amacıyla oluşturulmuş proxy backend uygulamasıdır. Frontend uygulaması üzerinden API'ye istek atarken cors hatası alındığı için proxy backend uygulaması geliştirilmiştir. 
-
-## Proxy backend uygulamasının çalıştırılması :
-
- ```bash
-/cd backend 
-npm install
-node server.js
- ```
 
 ## React frontend uygulamasının çalıştırılması :
  ```bash
@@ -39,3 +30,6 @@ verileri severity seviyelerine göre filtreleyebilir ve arama yapabilir.
 
 -React Router
 
+## Cors Config 
+
+vite.config.js dosyasında API URL belirlenir.
