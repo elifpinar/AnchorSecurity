@@ -1,6 +1,6 @@
 # Anchor Security
 
-## React frontend uygulamasının çalıştırılması :
+## React Frontend Uygulamasının Çalıştırılması :
  ```bash
 /cd dashboard
 npm install
