@@ -14,7 +14,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Chip } from '@mui/material';
 import DataTable from './DataTable.jsx';
 import HomePage from './HomePage.jsx';
-
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import SubjectIcon from '@mui/icons-material/Subject';
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
+import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
+import CropFreeRoundedIcon from '@mui/icons-material/CropFreeRounded';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import RecordVoiceOverTwoToneIcon from '@mui/icons-material/RecordVoiceOverTwoTone';
 const NAVIGATION = [
   {
     kind: 'header',
@@ -23,41 +29,102 @@ const NAVIGATION = [
   {
     segment: 'dashboard',
     title: 'Dashboard',
-    icon: <DashboardIcon />,
+    icon: <GridViewRoundedIcon />,
+  },
+  
+  {
+    segment: 'assetmanager',
+    title: 'Asset Manager',
+    icon: <WorkRoundedIcon />,
+    
   },
   {
     segment: 'table',
-    title: 'Table',
-    icon: <ShoppingCartIcon />,
+    title: 'Scan Manager',
+    icon: <CropFreeRoundedIcon />,
+    children: [
+      {
+        segment: ' ',
+        title: 'Start Scan',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'scanactivities',
+        title: 'Scan Activities',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'aibasedscangenerator',
+        title: 'AI Based Scan Generator',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+    ],
+  },
+  {
+    segment: 'outputs',
+    title: 'Outputs',
+    icon: <SubjectIcon />,
+    children: [
+      {
+        segment: 'scanreports',
+        title: 'Scan Reports',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'crawlerresults',
+        title: 'Crawler Results',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'securityreports',
+        title: 'security.txt Reports',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'dataexplorer',
+        title: 'Data Explorer',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'smartassistant',
+        title: 'Smart Assistant',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+    ],
+  },
+  {
+    segment: 'awareness',
+    title: 'Awareness',
+    icon: <AccountBalanceIcon />,
+    children: [
+      {
+        segment: 'startscan',
+        title: 'Start Scan',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'scanactivities',
+        title: 'Scan Activities',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+      {
+        segment: 'aibasedscangenerator',
+        title: 'AI Based Scan Generator',
+        icon: <FiberManualRecordRoundedIcon fontSize='small'/>,
+      },
+    ],
   },
   {
     kind: 'divider',
   },
   {
     kind: 'header',
-    title: 'Analytics',
+    title: 'SUPPORT',
   },
   {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: 'sales',
-        title: 'Sales',
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: 'traffic',
-        title: 'Traffic',
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
+    segment: 'supportTicket',
+    title: 'Support Ticket',
+    icon: <RecordVoiceOverTwoToneIcon />,
   },
 ];
 

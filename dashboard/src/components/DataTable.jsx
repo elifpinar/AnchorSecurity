@@ -21,6 +21,8 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography'; // Import Typography
+
 
 const severityLevels = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
 
@@ -133,6 +135,9 @@ function DataTable() {
   return (
     <Paper sx={{ width: '100%' }}>
       <div style={{ margin: '20px' }}>
+      <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', fontSize: '30px', marginBottom: '20px' }}>
+          Free Tools
+        </Typography>
         <TextField
           label="Search"
           variant="outlined"
