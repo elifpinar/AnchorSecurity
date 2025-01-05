@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,53 +11,115 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import Chip from '@mui/material/Chip'; // Chip bileşeni eklendi
+import Chip from '@mui/material/Chip';
+import Tooltip from '@mui/material/Tooltip';
+import { useTheme } from '@mui/material/styles';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
+
+const severityLevels = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
 
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170 },
-  {
-    id: 'population',
-    label: 'Description',
-    minWidth: 170,
-    align: 'center',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Severity',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
+  { id: 'description', label: 'Description', minWidth: 170, align: 'left' },
+  { id: 'severity', label: 'Severity', minWidth: 170, align: 'center' },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 1324171354, 3287263),
-  createData('China', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
-
-export default function DataTable() {
+function DataTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [data, setData] = React.useState([]);
+  const [selectedSeverities, setSelectedSeverities] = React.useState(() => {
+    const savedSeverities = localStorage.getItem('selectedSeverities');  // Using localStorage instead of sessionStorage
+    return savedSeverities ? JSON.parse(savedSeverities) : severityLevels; // Default to all severity levels
+  });
+
+  const theme = useTheme(); // For dark theme support
+
+  const token = '8Jp6PNe5nLzcZRqEzM4oUy5CpoGQGySbdUjlPXcqbfQlhPGgTosszVcOuaosaf-7UjTBgKhKEc-jzCsIJTOpIQ';
+
+  const fetchData = () => {
+    axios.post('/api/scan/list', { token })
+      .then(response => {
+        console.log('API Yanıtı:', response.data);
+        setData(response.data.value.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSeverityChange = (event) => {
+    const { target } = event;
+    const value = typeof target.value === 'string' ? target.value.split(',') : target.value;
+    setSelectedSeverities(value);
+    localStorage.setItem('selectedSeverities', JSON.stringify(value)); // Save selected severities to localStorage
+  };
+
+  const getSeverityLevel = (score) => {
+    if (score >= 8) {
+      return 'Critical';
+    } else if (score >= 6) {
+      return 'High';
+    } else if (score >= 4) {
+      return 'Medium';
+    } else if (score >= 2) {
+      return 'Low';
+    } else {
+      return 'Informational';
+    }
+  };
+
+  const getSeverityStyles = (severity) => {
+    switch (severity) {
+      case 'Critical':
+        return { backgroundColor: 'purple', color: 'white' };
+      case 'High':
+        return { backgroundColor: '#d81b60', color: 'white' };
+      case 'Medium':
+        return { backgroundColor: 'orange', color: 'white' };
+      case 'Low':
+        return { backgroundColor: 'green', color: 'white' };
+      case 'Informational':
+        return { backgroundColor: '#03a9f4', color: 'white' };
+      default:
+        return {};
+    }
+  };
+
+  const getSeverityTooltip = (severity) => {
+    switch (severity) {
+      case 'Critical':
+      case 'High':
+        return "Take action immediately. Exploitation could result in privileged unauthorized access to systems, significant data loss, or downtime.";
+      case 'Medium':
+        return "Vulnerabilities that can not be exploited directly. However, it can help attackers or can be triggered by manipulating other systems or victims.";
+      case 'Low':
+        return "Typically have very little or no impact.";
+      case 'Informational':
+        return "Indicates non-critical findings that pose no security risk. These are useful insights or configuration details for system analysis and improvement.";
+      default:
+        return "";
+    }
+  };
+
+  const filteredRows = data
+  .filter((row) => row.name && row.name.toLowerCase().includes(searchQuery.toLowerCase())) // 'name' alanının varlığı kontrol ediliyor
+  .filter((row) => selectedSeverities.includes(getSeverityLevel(row.score))); // Seviyeye göre filtreleme
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -67,21 +130,12 @@ export default function DataTable() {
     setPage(0);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <Paper sx={{ width: '100%' }}>
       <div style={{ margin: '20px' }}>
         <TextField
           label="Search"
           variant="outlined"
-          width="10%"
           value={searchQuery}
           onChange={handleSearchChange}
           size="small"
@@ -93,27 +147,39 @@ export default function DataTable() {
             ),
           }}
         />
+        <FormControl sx={{ minWidth: 120, marginLeft: 2 }}>
+          <InputLabel>Severity</InputLabel>
+          <Select
+          size = "small"
+            multiple
+            value={selectedSeverities}
+            onChange={handleSeverityChange}
+            input={<OutlinedInput label="Severity" />}
+            renderValue={(selected) => selected.join(', ')}
+          >
+            {severityLevels.map((severity) => (
+              <MenuItem key={severity} value={severity}>
+                <Checkbox checked={selectedSeverities.indexOf(severity) > -1} />
+                <ListItemText primary={severity} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
+
       <TableContainer sx={{ maxHeight: 690 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={2}>
-                Country
-              </TableCell>
-              <TableCell align="center" colSpan={3}>
-                Details
-              </TableCell>
-            </TableRow>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
                   style={{
-                    top: 57,
                     minWidth: column.minWidth,
-                    padding: '20px', // Genişlik arttırıldı
+                    backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f5f5f5',
+                    fontWeight: 'bold',
+                    color: theme.palette.mode === 'dark' ? 'white' : 'black',
                   }}
                 >
                   {column.label}
@@ -121,26 +187,49 @@ export default function DataTable() {
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {filteredRows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
+                const description = row.mini_desc;
+                const severity = getSeverityLevel(row.score);
+
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.slug}>
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      const value =
+                        column.id === 'description'
+                          ? description
+                          : column.id === 'severity'
+                          ? severity
+                          : row[column.id];
+
                       return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ padding: '15px' }} // Genişlik arttırıldı
-                        >
-                          {column.id === 'density' ? (
-                            <Chip label={value} size='small' variant="outlined" color="primary" />
+                        <TableCell key={column.id} align={column.align}>
+                          {column.id === 'severity' ? (
+                            <Tooltip
+                              title={getSeverityTooltip(value)}
+                              arrow
+                              sx={{
+                                backgroundColor: 'black',
+                                opacity: 0.9,
+                                color: 'white',
+                              }}
+                            >
+                              <Chip
+                                label={value}
+                                variant="outlined"
+                                sx={{
+                                  width: '120px',
+                                  ...getSeverityStyles(value),
+                                }}
+                              />
+                            </Tooltip>
+                          ) : column.id === 'description' ? (
+                            <div style={{ wordWrap: 'break-word' }}>{value}</div>
                           ) : (
-                            column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value
+                            value
                           )}
                         </TableCell>
                       );
@@ -163,3 +252,5 @@ export default function DataTable() {
     </Paper>
   );
 }
+
+export default DataTable;

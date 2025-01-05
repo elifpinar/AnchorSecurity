@@ -10,12 +10,10 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { useDemoRouter } from '@toolpad/core/internal';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Chip } from '@mui/material';
-import { BrowserRouter, Router } from 'react-router-dom';
-import {  Routes, Route } from 'react-router-dom';
-import DataTable from './DataTable.jsx'; // Table.jsx dosyanızın yolu
-
+import DataTable from './DataTable.jsx';
+import HomePage from './HomePage.jsx';
 
 const NAVIGATION = [
   {
@@ -79,77 +77,52 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname }) {
-  return (
-    
-    // <Routes>
-    //   <Route path="/table" element={<DataTable />} />
-    //   <Route path="/" element={<Typography>Dashboard content for {pathname}</Typography>} />
-    // </Routes>
-    
-    <DataTable></DataTable>
-  );
-}
-
-DemoPageContent.propTypes = {
-  pathname: PropTypes.string.isRequired,
-};
-
 function DashboardLayoutBasic(props) {
-
-
   const { window } = props;
 
-  const router = useDemoRouter('/dashboard'); //sayfa açıldığında açık olacak sayfa
-
-  // Remove this const when copying and pasting into your project.
   const demoWindow = window !== undefined ? window() : undefined;
 
-  
-
   return (
-    // preview-start
     <BrowserRouter>
-    <AppProvider
-      navigation={NAVIGATION}
-      router={router}
-      theme={demoTheme}
-      window={demoWindow}
-      branding={{
-  logo: (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <img 
-        src="/logo.webp" 
-        alt="Powea logo" 
-        style={{ width: '100px', height: 'auto', marginTop: '1px' }} 
-      />
-      <Chip 
-        label="Free" 
-         size= 'small'
-        style={{ 
-          marginLeft: '8px', 
-          fontWeight: 'bold', 
-          backgroundColor: 'black', 
-          color: 'white', 
-          fontSize: '13px', // Yazı boyutunu küçültüyoruz
-          padding: '1px 4px', // İçerik ile kenar arasındaki boşluğu azaltıyoruz
-          borderRadius: '5px' // Köşe ovalikligini azaltıyoruz
-          
-        }} 
-      />
-    </div>
-  ),
-  title: ' ',
-}}
-
-      
-    >
-      <DashboardLayout>
-        <DemoPageContent pathname={router.pathname}  />
-      </DashboardLayout>
-    </AppProvider>
+      <AppProvider
+        navigation={NAVIGATION}
+        theme={demoTheme}
+        window={demoWindow}
+        branding={{
+          logo: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img
+                src="/logo.webp"
+                alt=" logo"
+                style={{ width: '100px', height: 'auto', marginTop: '1px' }}
+              />
+              <Chip
+                label="Free"
+                size="small"
+                style={{
+                  marginLeft: '8px',
+                  fontWeight: 'bold',
+                  backgroundColor: 'black',
+                  color: 'white',
+                  fontSize: '13px',
+                  padding: '1px 4px',
+                  borderRadius: '5px',
+                }}
+              />
+            </div>
+          ),
+          title: ' ',
+        }}
+      >
+        <DashboardLayout>
+          <Routes>
+            <Route path="/" element={<Navigate to="/table" replace />} />
+            <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/table" element={<DataTable />} />
+          </Routes>
+        </DashboardLayout>
+      </AppProvider>
     </BrowserRouter>
-    // preview-end
   );
 }
 
