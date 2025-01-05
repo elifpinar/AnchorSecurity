@@ -9,6 +9,7 @@ npm install
 node server.js
 
 React frontend uygulamasının çalıştırılması :
+
 /cd dashboard
 
 npm install
@@ -31,6 +32,7 @@ React Router: Sayfalar arası geçiş için kullanılır.
 
 
 Kullanılan Teknolojiler:
+
 React
 
 Material UI
