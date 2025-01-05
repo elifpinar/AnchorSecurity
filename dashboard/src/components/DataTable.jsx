@@ -39,11 +39,11 @@ function DataTable() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [data, setData] = React.useState([]);
   const [selectedSeverities, setSelectedSeverities] = React.useState(() => {
-    const savedSeverities = localStorage.getItem('selectedSeverities');  // Using localStorage instead of sessionStorage
-    return savedSeverities ? JSON.parse(savedSeverities) : []; // Default to all severity levels
+    const savedSeverities = localStorage.getItem('selectedSeverities');  
+    return savedSeverities ? JSON.parse(savedSeverities) : []; //Default to all severity levels
   });
 
-  const theme = useTheme(); // For dark theme support
+  const theme = useTheme(); //For dark theme support
 
   const token = '8Jp6PNe5nLzcZRqEzM4oUy5CpoGQGySbdUjlPXcqbfQlhPGgTosszVcOuaosaf-7UjTBgKhKEc-jzCsIJTOpIQ';
 
@@ -71,7 +71,7 @@ function DataTable() {
     const { target } = event;
     const value = typeof target.value === 'string' ? target.value.split(',') : target.value;
     setSelectedSeverities(value);
-    localStorage.setItem('selectedSeverities', JSON.stringify(value)); // Save selected severities to localStorage
+    localStorage.setItem('selectedSeverities', JSON.stringify(value)); //Save selected severities to localStorage
   };
 
   const getSeverityLevel = (score) => {
@@ -128,9 +128,7 @@ function DataTable() {
     return selectedSeverities.includes(getSeverityLevel(row.score))
    else
    return true;
-  
-  
-   }); //Seviyeye göre filtreleme
+   }); 
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
