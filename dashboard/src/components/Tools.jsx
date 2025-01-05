@@ -5,7 +5,7 @@ function Tools() {
 
   return (
    
-   <div>tamam</div>
+   <div> </div>
   )
 }
 

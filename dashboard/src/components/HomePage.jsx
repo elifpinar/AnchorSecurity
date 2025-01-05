@@ -4,7 +4,7 @@ function HomePage() {
 
   return (
    
-   <div>tamam</div>
+   <div> </div>
   )
 }
 

@@ -22,6 +22,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography'; // Import Typography
+import swal from 'sweetalert';
 
 
 const severityLevels = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
@@ -39,7 +40,7 @@ function DataTable() {
   const [data, setData] = React.useState([]);
   const [selectedSeverities, setSelectedSeverities] = React.useState(() => {
     const savedSeverities = localStorage.getItem('selectedSeverities');  // Using localStorage instead of sessionStorage
-    return savedSeverities ? JSON.parse(savedSeverities) : severityLevels; // Default to all severity levels
+    return savedSeverities ? JSON.parse(savedSeverities) : []; // Default to all severity levels
   });
 
   const theme = useTheme(); // For dark theme support
@@ -53,10 +54,11 @@ function DataTable() {
         setData(response.data.value.data);
       })
       .catch(error => {
+        swal("Hata Kodu: " + error.status , "API'ye istek atarken hata oluştu .", "error");
+
         console.error(error);
       });
   };
-
   React.useEffect(() => {
     fetchData();
   }, []);
@@ -120,11 +122,19 @@ function DataTable() {
   };
 
   const filteredRows = data
-  .filter((row) => row.name && row.name.toLowerCase().includes(searchQuery.toLowerCase())) // 'name' alanının varlığı kontrol ediliyor
-  .filter((row) => selectedSeverities.includes(getSeverityLevel(row.score))); // Seviyeye göre filtreleme
+  .filter((row) => row.name && row.name.toLowerCase().includes(searchQuery.toLowerCase())) 
+  .filter((row) => { 
+    if  ( selectedSeverities.length > 0 )
+    return selectedSeverities.includes(getSeverityLevel(row.score))
+   else
+   return true;
+  
+  
+   }); //Seviyeye göre filtreleme
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -134,29 +144,34 @@ function DataTable() {
 
   return (
     <Paper sx={{ width: '100%' }}>
-      <div style={{ margin: '20px' }}>
-      <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', fontSize: '30px', marginBottom: '20px' }}>
+      <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', fontSize: '30px', marginTop:'10px', marginLeft:'20px' }}>
           Free Tools
         </Typography>
-        <TextField
+      <div style={{  margin: '20px', display:'flex', justifyContent:'flex-start', gap: '10px'}}>
+      
+        <TextField 
+          sx={{ minWidth: 150}}
           label="Search"
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
-          size="small"
+          size="medium"
           InputProps={{
             endAdornment: (
+
               <InputAdornment position="end">
                 <SearchIcon />
               </InputAdornment>
             ),
           }}
         />
-        <FormControl sx={{ minWidth: 120, marginLeft: 2 }}>
+        <FormControl sx={{ minWidth: 150}}>
           <InputLabel>Severity</InputLabel>
           <Select
-          size = "small"
+          
+          size = "medium"
             multiple
+            
             value={selectedSeverities}
             onChange={handleSeverityChange}
             input={<OutlinedInput label="Severity" />}
